@@ -40,6 +40,15 @@ export default function Footer({ lastUpdated }: Props) {
             Ben Greenberg
           </a>
         </p>
+        <a
+          href="https://buymeacoffee.com/bengreenberg"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 mt-4 px-4 py-2 border border-cream/15 rounded-sm font-mono text-xs text-cream/50 hover:text-cream hover:border-cream/30 hover:bg-cream/5 transition-all duration-500 ease-smooth"
+        >
+          <span>☕</span>
+          <span>{lang === "he" ? "קנו לי קפה" : "Buy me a coffee"}</span>
+        </a>
       </div>
     </footer>
   );
