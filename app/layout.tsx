@@ -23,7 +23,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://best-shower-time.vercel.app"),
+  metadataBase: new URL("https://bestshowertime.com"),
   title: {
     default: "Best Shower Time | הזמן הטוב למקלחת",
     template: "%s | Best Shower Time",
@@ -69,7 +69,7 @@ export const metadata: Metadata = {
     siteName: "Best Shower Time",
     locale: "en_US",
     type: "website",
-    url: "https://best-shower-time.vercel.app",
+    url: "https://bestshowertime.com",
   },
   twitter: {
     card: "summary_large_image",
