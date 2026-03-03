@@ -30,6 +30,8 @@ const translations = {
     alerts: "alerts",
     location: "Location",
     searchCity: "Search city...",
+    exitTime: "Time to Get Out",
+    exitTimeDesc: "How long to towel off and reach safety",
   },
   he: {
     appName: "הזמן הטוב למקלחת",
@@ -60,6 +62,8 @@ const translations = {
     alerts: "התרעות",
     location: "מיקום",
     searchCity: "חפש עיר...",
+    exitTime: "זמן יציאה",
+    exitTimeDesc: "כמה זמן להתנגב ולהגיע לממ״ד",
   },
 } as const;
 

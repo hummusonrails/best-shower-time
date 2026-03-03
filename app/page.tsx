@@ -21,6 +21,7 @@ export default function Home() {
   const [recommendation, setRecommendation] = useState<SafetyRecommendation | null>(null);
   const [activity, setActivity] = useState<ActivityType>("shower");
   const [duration, setDuration] = useState(8);
+  const [exitTime, setExitTime] = useState(2);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [selectedRegion, setSelectedRegion] = useState("all");
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
@@ -82,12 +83,15 @@ export default function Home() {
     return () => clearInterval(interval);
   }, [fetchAlerts]);
 
+  // Effective duration: activity time + exit buffer (shower only)
+  const effectiveDuration = activity === "shower" ? duration + exitTime : duration;
+
   // Recompute stats when filtered alerts or duration change
   useEffect(() => {
     const newStats = computeStats(filteredAlerts);
     setStats(newStats);
-    setRecommendation(getRecommendation(newStats, duration));
-  }, [filteredAlerts, duration]);
+    setRecommendation(getRecommendation(newStats, effectiveDuration));
+  }, [filteredAlerts, effectiveDuration]);
 
   return (
     <div className="min-h-screen flex flex-col items-center">
@@ -99,8 +103,10 @@ export default function Home() {
           <ActivitySelector
             activity={activity}
             duration={duration}
+            exitTime={exitTime}
             onActivityChange={setActivity}
             onDurationChange={setDuration}
+            onExitTimeChange={setExitTime}
           />
           <LocationSelector
             selectedRegion={selectedRegion}

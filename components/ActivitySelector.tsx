@@ -7,15 +7,19 @@ import { ActivityType } from "@/lib/types";
 interface Props {
   activity: ActivityType;
   duration: number;
+  exitTime: number;
   onActivityChange: (activity: ActivityType) => void;
   onDurationChange: (duration: number) => void;
+  onExitTimeChange: (exitTime: number) => void;
 }
 
 export default function ActivitySelector({
   activity,
   duration,
+  exitTime,
   onActivityChange,
   onDurationChange,
+  onExitTimeChange,
 }: Props) {
   const { lang } = useLanguage();
 
@@ -96,6 +100,39 @@ export default function ActivitySelector({
         <div className="flex justify-between mt-1">
           <span className="font-mono text-xs text-cream/30">3</span>
           <span className="font-mono text-xs text-cream/30">{maxDuration}</span>
+        </div>
+      </div>
+
+      {/* Exit time slider — shower only */}
+      <div
+        className={`overflow-hidden transition-all duration-500 ease-smooth ${
+          activity === "shower" ? "max-h-40 opacity-100 mt-3" : "max-h-0 opacity-0 mt-0"
+        }`}
+      >
+        <div className="bracket-frame px-6 py-4">
+          <div className="flex items-center justify-between mb-1">
+            <span className="font-mono text-xs text-cream/50 uppercase tracking-wider">
+              {t(lang, "exitTime")}
+            </span>
+            <span className="font-mono text-lg text-cream">
+              {exitTime} {t(lang, "minutes")}
+            </span>
+          </div>
+          <p className="font-mono text-xs text-cream/25 mb-3">
+            {t(lang, "exitTimeDesc")}
+          </p>
+          <input
+            type="range"
+            min={1}
+            max={5}
+            value={exitTime}
+            onChange={(e) => onExitTimeChange(Number(e.target.value))}
+            className="slider w-full"
+          />
+          <div className="flex justify-between mt-1">
+            <span className="font-mono text-xs text-cream/30">1</span>
+            <span className="font-mono text-xs text-cream/30">5</span>
+          </div>
         </div>
       </div>
     </section>
