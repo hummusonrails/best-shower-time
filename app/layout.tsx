@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Cormorant_Garamond, JetBrains_Mono, Inter } from "next/font/google";
 import { LanguageProvider } from "@/lib/LanguageContext";
 import "./globals.css";
@@ -102,6 +103,11 @@ export default function RootLayout({
         className={`${cormorant.variable} ${jetbrains.variable} ${inter.variable} antialiased`}
       >
         <LanguageProvider>{children}</LanguageProvider>
+        <Script
+          data-goatcounter="https://bestshowertime.goatcounter.com/count"
+          src="//gc.zgo.at/count.js"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
