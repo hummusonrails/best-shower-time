@@ -109,6 +109,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" dir="ltr">
+      <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body
         className={`${cormorant.variable} ${jetbrains.variable} ${inter.variable} antialiased`}
       >
