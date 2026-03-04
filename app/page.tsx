@@ -9,6 +9,10 @@ import StatsGrid from "@/components/StatsGrid";
 import AlertTimeline from "@/components/AlertTimeline";
 import HowItWorks from "@/components/HowItWorks";
 import Footer from "@/components/Footer";
+import ShowerSchedule from "@/components/ShowerSchedule";
+import InstallPrompt from "@/components/InstallPrompt";
+import ScrollReveal from "@/components/ScrollReveal";
+import useDeviceType from "@/hooks/useDeviceType";
 import { ProcessedAlert, ActivityType, SafetyStats, SafetyRecommendation } from "@/lib/types";
 import { computeStats, getRecommendation } from "@/lib/safety";
 import { filterAlertsByRegion } from "@/lib/regions";
@@ -16,6 +20,7 @@ import { filterAlertsByRegion } from "@/lib/regions";
 const REFRESH_INTERVAL = 30_000;
 
 export default function Home() {
+  const { isMobile } = useDeviceType();
   const [alerts, setAlerts] = useState<ProcessedAlert[]>([]);
   const [stats, setStats] = useState<SafetyStats | null>(null);
   const [recommendation, setRecommendation] = useState<SafetyRecommendation | null>(null);
@@ -96,31 +101,54 @@ export default function Home() {
   return (
     <div className="min-h-screen flex flex-col items-center">
       <div className="w-full max-w-xl">
-        <Header />
+        <ScrollReveal direction="down">
+          <Header />
+        </ScrollReveal>
 
         <main className="flex flex-col items-center gap-8 pb-8">
-          <SafetyVerdict recommendation={recommendation} />
-          <ActivitySelector
-            activity={activity}
-            duration={duration}
-            exitTime={exitTime}
-            onActivityChange={setActivity}
-            onDurationChange={setDuration}
-            onExitTimeChange={setExitTime}
-          />
-          <LocationSelector
-            selectedRegion={selectedRegion}
-            onRegionChange={setSelectedRegion}
-            availableCities={availableCities}
-            selectedCity={selectedCity}
-            onCityChange={setSelectedCity}
-          />
-          <StatsGrid stats={stats} />
-          <AlertTimeline alerts={filteredAlerts} />
-          <HowItWorks />
+          <ScrollReveal>
+            <SafetyVerdict recommendation={recommendation} />
+          </ScrollReveal>
+          <ScrollReveal direction="left" delay={100}>
+            <ActivitySelector
+              activity={activity}
+              duration={duration}
+              exitTime={exitTime}
+              onActivityChange={setActivity}
+              onDurationChange={setDuration}
+              onExitTimeChange={setExitTime}
+            />
+          </ScrollReveal>
+          <ScrollReveal direction="right" delay={50}>
+            {isMobile ? (
+              <ShowerSchedule duration={effectiveDuration} />
+            ) : (
+              <InstallPrompt />
+            )}
+          </ScrollReveal>
+          <ScrollReveal direction="right" delay={100}>
+            <LocationSelector
+              selectedRegion={selectedRegion}
+              onRegionChange={setSelectedRegion}
+              availableCities={availableCities}
+              selectedCity={selectedCity}
+              onCityChange={setSelectedCity}
+            />
+          </ScrollReveal>
+          <ScrollReveal delay={150} className="w-full">
+            <StatsGrid stats={stats} />
+          </ScrollReveal>
+          <ScrollReveal delay={100} className="w-full">
+            <AlertTimeline alerts={filteredAlerts} />
+          </ScrollReveal>
+          <ScrollReveal>
+            <HowItWorks />
+          </ScrollReveal>
         </main>
 
-        <Footer lastUpdated={lastUpdated} />
+        <ScrollReveal>
+          <Footer lastUpdated={lastUpdated} />
+        </ScrollReveal>
       </div>
     </div>
   );
