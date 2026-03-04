@@ -12,7 +12,7 @@
 <p align="center">
   <strong>Real-time rocket alert analysis to help Israelis decide when it's safe to shower.</strong>
   <br>
-  <a href="#quick-start">Quick Start</a> · <a href="https://github.com/hummusonrails/best-shower-time/issues">Report a Bug</a>
+  <a href="https://bestshowertime.com">Live Site</a> · <a href="#quick-start">Quick Start</a> · <a href="https://github.com/hummusonrails/best-shower-time/issues">Report a Bug</a>
 </p>
 
 ---
@@ -23,7 +23,7 @@ During active conflict, Israelis need to quickly assess whether it's safe to tak
 
 - **Scores safety in real time** using a weighted algorithm (time since last alert, average gaps, frequency trends, alert density)
 - **Filters by location** with 16 predefined regions and a searchable database of 1,362 cities in both Hebrew and English
-- **Adapts to your activity** — pick shower or toilet and adjust the duration slider to get a personalized recommendation
+- **Adapts to your activity** — pick shower or toilet, adjust the duration slider, and for showers set your exit time buffer (time to towel off and reach a safe room)
 - **Visualizes the last 24 hours** of alert activity in an hourly timeline chart
 - **Supports Hebrew and English** with full RTL layout, persisted in localStorage
 - **Auto-refreshes every 30 seconds** so the recommendation stays current
@@ -49,6 +49,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | Charts         | Recharts              | 24h alert timeline bar chart               |
 | Data source    | Tzeva Adom API        | `api.tzevaadom.co.il` — no geo-restriction |
 | City names     | pikud-haoref-api      | 1,362 Hebrew↔English city mappings         |
+| Analytics      | GoatCounter           | Privacy-friendly, no-cookie tracking       |
 | Deployment     | Vercel                | Zero-config deployment                     |
 
 <details>
@@ -110,5 +111,5 @@ Found a bug or have a suggestion? [Open an issue](https://github.com/hummusonrai
 ---
 
 <p align="center">
-  Made by <a href="https://www.hummusonrails.com/">Ben Greenberg</a>
+  Made by <a href="https://www.hummusonrails.com/">Ben Greenberg</a> · <a href="https://buymeacoffee.com/bengreenberg">Buy me a coffee</a>
 </p>

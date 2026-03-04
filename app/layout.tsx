@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { Cormorant_Garamond, JetBrains_Mono, Inter } from "next/font/google";
 import { LanguageProvider } from "@/lib/LanguageContext";
+import ServiceWorkerRegistration from "@/components/ServiceWorkerRegistration";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -25,6 +26,15 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://bestshowertime.com"),
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Best Shower Time",
+  },
+  icons: {
+    apple: "/icons/icon-192.png",
+  },
   title: {
     default: "Best Shower Time | הזמן הטוב למקלחת",
     template: "%s | Best Shower Time",
@@ -103,6 +113,7 @@ export default function RootLayout({
         className={`${cormorant.variable} ${jetbrains.variable} ${inter.variable} antialiased`}
       >
         <LanguageProvider>{children}</LanguageProvider>
+        <ServiceWorkerRegistration />
         <Script
           data-goatcounter="https://bestshowertime.goatcounter.com/count"
           src="//gc.zgo.at/count.js"
