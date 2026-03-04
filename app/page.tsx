@@ -9,10 +9,8 @@ import StatsGrid from "@/components/StatsGrid";
 import AlertTimeline from "@/components/AlertTimeline";
 import HowItWorks from "@/components/HowItWorks";
 import Footer from "@/components/Footer";
-import ShowerSchedule from "@/components/ShowerSchedule";
 import InstallPrompt from "@/components/InstallPrompt";
 import ScrollReveal from "@/components/ScrollReveal";
-import useDeviceType from "@/hooks/useDeviceType";
 import { ProcessedAlert, ActivityType, SafetyStats, SafetyRecommendation } from "@/lib/types";
 import { computeStats, getRecommendation } from "@/lib/safety";
 import { filterAlertsByRegion } from "@/lib/regions";
@@ -20,7 +18,6 @@ import { filterAlertsByRegion } from "@/lib/regions";
 const REFRESH_INTERVAL = 30_000;
 
 export default function Home() {
-  const { isMobile } = useDeviceType();
   const [alerts, setAlerts] = useState<ProcessedAlert[]>([]);
   const [stats, setStats] = useState<SafetyStats | null>(null);
   const [recommendation, setRecommendation] = useState<SafetyRecommendation | null>(null);
@@ -120,11 +117,7 @@ export default function Home() {
             />
           </ScrollReveal>
           <ScrollReveal direction="right" delay={50}>
-            {isMobile ? (
-              <ShowerSchedule duration={effectiveDuration} />
-            ) : (
-              <InstallPrompt />
-            )}
+            <InstallPrompt />
           </ScrollReveal>
           <ScrollReveal direction="right" delay={100} className="relative z-10">
             <LocationSelector
