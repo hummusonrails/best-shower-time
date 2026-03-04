@@ -1,13 +1,57 @@
 // Best Shower Time — Service Worker
 // Handles app shell caching and scheduled shower reminders
 
-const CACHE_NAME = "bst-v1";
+const CACHE_NAME = "bst-v2";
 const STATIC_ASSETS = ["/", "/manifest.json"];
 
 // Schedule state
 let schedule = null; // { enabled, time, region, city, duration }
 let checkInterval = null;
 let lastFiredMinute = null; // prevent double-firing in same minute
+
+// ─── IndexedDB persistence ──────────────────────────────────────────────────
+
+function openDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open("bst-sw", 1);
+    req.onupgradeneeded = () => {
+      req.result.createObjectStore("kv");
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function saveSchedule(data) {
+  try {
+    const db = await openDB();
+    const tx = db.transaction("kv", "readwrite");
+    tx.objectStore("kv").put(data, "schedule");
+    await new Promise((res, rej) => {
+      tx.oncomplete = res;
+      tx.onerror = rej;
+    });
+    db.close();
+  } catch {
+    // IndexedDB unavailable — fall back to in-memory only
+  }
+}
+
+async function loadSchedule() {
+  try {
+    const db = await openDB();
+    const tx = db.transaction("kv", "readonly");
+    const req = tx.objectStore("kv").get("schedule");
+    const result = await new Promise((res, rej) => {
+      req.onsuccess = () => res(req.result);
+      req.onerror = rej;
+    });
+    db.close();
+    return result || null;
+  } catch {
+    return null;
+  }
+}
 
 // ─── Install ───────────────────────────────────────────────────────────────────
 
@@ -24,10 +68,18 @@ self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k)))
-    )
+    ).then(() => restoreSchedule())
   );
   self.clients.claim();
 });
+
+async function restoreSchedule() {
+  const saved = await loadSchedule();
+  if (saved && saved.enabled) {
+    schedule = saved;
+    startScheduleChecker();
+  }
+}
 
 // ─── Fetch — Cache strategy ────────────────────────────────────────────────────
 
@@ -68,6 +120,7 @@ self.addEventListener("fetch", (event) => {
 self.addEventListener("message", (event) => {
   if (event.data && event.data.type === "SYNC_SCHEDULE") {
     schedule = event.data.schedule;
+    saveSchedule(schedule);
 
     if (schedule && schedule.enabled) {
       startScheduleChecker();
