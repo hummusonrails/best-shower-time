@@ -160,7 +160,7 @@ export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
   return (
     <>
       {isMobile && !isStandalone && <InstallPrompt />}
-      <div className="bracket-frame px-4 py-4 w-full">
+      <div className="card px-5 py-5 w-full">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-serif text-lg md:text-xl text-cream/90">
             {t(lang, "showerReminder")}
@@ -190,7 +190,7 @@ export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
             type="time"
             value={time}
             onChange={(e) => setTime(e.target.value)}
-            className="time-input bg-cream/5 border border-cream/15 rounded px-3 py-1.5 text-cream font-mono text-sm outline-none focus:border-cream/30 transition-colors"
+            className="time-input bg-surface-2 rounded-lg px-3 py-1.5 text-cream font-mono text-sm outline-none focus:ring-1 focus:ring-cream/15 transition-colors"
           />
           {enabled && (
             <span className="text-xs text-safety/70 font-mono">

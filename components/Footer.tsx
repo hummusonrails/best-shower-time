@@ -11,7 +11,7 @@ export default function Footer({ lastUpdated }: Props) {
   const { lang } = useLanguage();
 
   return (
-    <footer className="w-full py-8 px-4 mt-8 border-t border-cream/8">
+    <footer className="w-full py-8 px-4 mt-8 border-t border-divider">
       <div className="flex flex-col items-center gap-2 text-center">
         <p className="font-mono text-xs text-cream/30">
           {t(lang, "dataSource")}
@@ -44,7 +44,7 @@ export default function Footer({ lastUpdated }: Props) {
           href="https://buymeacoffee.com/bengreenberg"
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 mt-4 px-4 py-2 border border-cream/15 rounded-sm font-mono text-xs text-cream/50 hover:text-cream hover:border-cream/30 hover:bg-cream/5 transition-all duration-500 ease-smooth"
+          className="inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-lg bg-surface-1 hover:bg-surface-2 font-mono text-xs text-cream/50 hover:text-cream transition-all duration-500 ease-smooth"
         >
           <span>☕</span>
           <span>{lang === "he" ? "קנו לי קפה" : "Buy me a coffee"}</span>

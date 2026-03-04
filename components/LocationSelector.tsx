@@ -46,7 +46,7 @@ export default function LocationSelector({
 
   return (
     <section className="w-full max-w-md mx-auto px-4">
-      <div className="bracket-frame px-5 py-4">
+      <div className="card px-5 py-5">
         <span className="font-mono text-xs text-cream/40 uppercase tracking-wider block mb-3">
           {t(lang, "location")}
         </span>
@@ -61,10 +61,10 @@ export default function LocationSelector({
                 onCityChange(null);
                 setCitySearch("");
               }}
-              className={`px-3 py-1.5 text-xs font-mono rounded-sm border transition-all duration-500 ease-smooth ${
+              className={`px-3 py-1.5 text-xs font-mono rounded-lg transition-all duration-500 ease-smooth ${
                 selectedRegion === r.id && !selectedCity
-                  ? "border-cream/40 bg-cream/10 text-cream"
-                  : "border-cream/10 text-cream/35 hover:text-cream/55 hover:border-cream/20"
+                  ? "bg-surface-2 text-cream"
+                  : "text-cream/35 hover:bg-surface-1"
               }`}
             >
               {regionName(r)}
@@ -92,7 +92,7 @@ export default function LocationSelector({
               if (citySearch.length >= 2) setShowCityDropdown(true);
             }}
             placeholder={t(lang, "searchCity")}
-            className="w-full bg-transparent border border-cream/15 rounded-sm px-3 py-2 font-mono text-sm text-cream placeholder:text-cream/25 focus:outline-none focus:border-cream/30 transition-colors duration-300"
+            className="w-full bg-surface-2 rounded-lg px-3 py-2 font-mono text-sm text-cream placeholder:text-cream/25 focus:outline-none focus:ring-1 focus:ring-cream/15 transition-colors duration-300"
             dir={lang === "he" ? "rtl" : "ltr"}
           />
 
@@ -109,7 +109,7 @@ export default function LocationSelector({
           )}
 
           {showCityDropdown && filteredCities.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-bg border border-cream/15 rounded-sm max-h-48 overflow-y-auto z-50">
+            <div className="absolute top-full left-0 right-0 mt-1 bg-surface-1 border border-divider rounded-lg max-h-48 overflow-y-auto z-50">
               {filteredCities.map((city) => (
                 <button
                   key={city}
@@ -119,7 +119,7 @@ export default function LocationSelector({
                     setShowCityDropdown(false);
                     onRegionChange("all");
                   }}
-                  className="w-full flex items-center justify-between px-3 py-2 font-mono text-sm text-cream/70 hover:bg-cream/8 hover:text-cream transition-colors duration-200"
+                  className="w-full flex items-center justify-between px-3 py-2 font-mono text-sm text-cream/70 hover:bg-surface-2 hover:text-cream transition-colors duration-200"
                 >
                   <span className="text-cream/40 text-xs">{getCityEnglishName(city)}</span>
                   <span dir="rtl">{city}</span>

@@ -105,7 +105,7 @@ export default function Home() {
           <Header />
         </ScrollReveal>
 
-        <main className="flex flex-col items-center gap-8 pb-8">
+        <main className="flex flex-col items-center gap-10 pb-10">
           <ScrollReveal>
             <SafetyVerdict recommendation={recommendation} />
           </ScrollReveal>
@@ -126,7 +126,7 @@ export default function Home() {
               <InstallPrompt />
             )}
           </ScrollReveal>
-          <ScrollReveal direction="right" delay={100}>
+          <ScrollReveal direction="right" delay={100} className="relative z-10">
             <LocationSelector
               selectedRegion={selectedRegion}
               onRegionChange={setSelectedRegion}

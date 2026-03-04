@@ -37,7 +37,7 @@ export default function InstallPrompt() {
     const text = t(lang, "installCTAiOS");
     const parts = text.split("{icon}");
     return (
-      <div className="bracket-frame px-4 py-3 w-full">
+      <div className="card px-5 py-4 w-full">
         <p className="text-xs text-cream/60 font-mono leading-relaxed">
           <span className="mr-1">📲</span>
           {parts[0]}
@@ -52,7 +52,7 @@ export default function InstallPrompt() {
   if (isMobile && isAndroid) {
     if (installPrompt) {
       return (
-        <div className="bracket-frame px-4 py-3 w-full">
+        <div className="card px-5 py-4 w-full">
           <div className="flex items-center justify-between">
             <p className="text-xs text-cream/60 font-mono">
               <span className="mr-1">📲</span>
@@ -60,7 +60,7 @@ export default function InstallPrompt() {
             </p>
             <button
               onClick={() => installPrompt.prompt()}
-              className="ml-3 px-3 py-1 text-xs font-mono bg-cream/10 border border-cream/20 rounded text-cream/80 hover:bg-cream/15 transition-colors whitespace-nowrap"
+              className="ml-3 px-3 py-1 text-xs font-mono rounded-lg bg-surface-2 hover:bg-cream/10 text-cream/80 transition-colors whitespace-nowrap"
             >
               {t(lang, "installButton")}
             </button>
@@ -70,7 +70,7 @@ export default function InstallPrompt() {
     }
 
     return (
-      <div className="bracket-frame px-4 py-3 w-full">
+      <div className="card px-5 py-4 w-full">
         <p className="text-xs text-cream/60 font-mono">
           <span className="mr-1">📲</span>
           {t(lang, "installCTAAndroid")}
@@ -82,7 +82,7 @@ export default function InstallPrompt() {
   // Mode C — Desktop
   if (!isMobile) {
     return (
-      <div className="bracket-frame px-4 py-3 w-full">
+      <div className="card px-5 py-4 w-full">
         <p className="text-xs text-cream/60 font-mono">
           <span className="mr-1">📱</span>
           {t(lang, "installCTADesktop")}

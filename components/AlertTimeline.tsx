@@ -60,7 +60,7 @@ export default function AlertTimeline({ alerts }: Props) {
       <h3 className="font-serif italic text-lg text-cream/70 mb-4">
         {t(lang, "timeline")}
       </h3>
-      <div className="bracket-frame p-4">
+      <div className="card p-5">
         <ResponsiveContainer width="100%" height={180}>
           <BarChart data={buckets} margin={{ top: 8, right: 8, bottom: 0, left: -20 }}>
             <XAxis
@@ -78,17 +78,16 @@ export default function AlertTimeline({ alerts }: Props) {
             />
             <Tooltip
               contentStyle={{
-                backgroundColor: "#FFEEC8",
+                backgroundColor: "var(--color-surface-2)",
                 border: "none",
-                borderRadius: 4,
+                borderRadius: 8,
                 fontFamily: "JetBrains Mono, monospace",
                 fontSize: 12,
-                color: "#1E1E1C",
+                color: "#FFEEC8",
                 padding: "8px 12px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.4)",
               }}
-              labelStyle={{ color: "#1E1E1C", fontWeight: 500 }}
-              itemStyle={{ color: "#1E1E1C" }}
+              labelStyle={{ color: "#FFEEC8", fontWeight: 500 }}
+              itemStyle={{ color: "#FFEEC8" }}
               cursor={{ fill: "rgba(255,238,200,0.06)" }}
             />
             <Bar dataKey="count" radius={[2, 2, 0, 0]} maxBarSize={20}>

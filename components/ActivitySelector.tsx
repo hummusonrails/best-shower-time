@@ -34,10 +34,10 @@ export default function ActivitySelector({
             onActivityChange("shower");
             onDurationChange(Math.min(duration, 20));
           }}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-sm border transition-all duration-500 ease-smooth ${
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg transition-all duration-500 ease-smooth ${
             activity === "shower"
-              ? "border-cream/30 bg-cream/8 text-cream"
-              : "border-cream/10 text-cream/40 hover:text-cream/60"
+              ? "bg-surface-2 text-cream"
+              : "text-cream/40 hover:text-cream/60"
           }`}
         >
           <svg
@@ -57,10 +57,10 @@ export default function ActivitySelector({
 
         <button
           onClick={() => onActivityChange("toilet")}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-sm border transition-all duration-500 ease-smooth ${
+          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg transition-all duration-500 ease-smooth ${
             activity === "toilet"
-              ? "border-cream/30 bg-cream/8 text-cream"
-              : "border-cream/10 text-cream/40 hover:text-cream/60"
+              ? "bg-surface-2 text-cream"
+              : "text-cream/40 hover:text-cream/60"
           }`}
         >
           <svg
@@ -80,7 +80,7 @@ export default function ActivitySelector({
       </div>
 
       {/* Duration slider */}
-      <div className="bracket-frame px-6 py-4">
+      <div className="card px-6 py-5">
         <div className="flex items-center justify-between mb-3">
           <span className="font-mono text-xs text-cream/50 uppercase tracking-wider">
             {t(lang, "activityDuration")}
@@ -109,7 +109,7 @@ export default function ActivitySelector({
           activity === "shower" ? "max-h-40 opacity-100 mt-3" : "max-h-0 opacity-0 mt-0"
         }`}
       >
-        <div className="bracket-frame px-6 py-4">
+        <div className="card px-6 py-5">
           <div className="flex items-center justify-between mb-1">
             <span className="font-mono text-xs text-cream/50 uppercase tracking-wider">
               {t(lang, "exitTime")}

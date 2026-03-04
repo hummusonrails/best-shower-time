@@ -3,6 +3,9 @@
 @theme inline {
   --color-cream: #FFEEC8;
   --color-bg: #1E1E1C;
+  --color-surface-1: #252523;
+  --color-surface-2: #2C2C29;
+  --color-divider: rgba(255, 238, 200, 0.08);
   --color-safety: #4ADE80;
   --color-warning: #FBBF24;
   --color-danger: #EF4444;
@@ -29,34 +32,6 @@ html {
   scrollbar-width: none;
 }
 
-/* Corner bracket frames */
-.bracket-frame {
-  position: relative;
-}
-
-.bracket-frame::before,
-.bracket-frame::after {
-  content: "";
-  position: absolute;
-  width: 12px;
-  height: 12px;
-  pointer-events: none;
-}
-
-.bracket-frame::before {
-  top: 0;
-  left: 0;
-  border-top: 1px solid rgba(255, 238, 200, 0.25);
-  border-left: 1px solid rgba(255, 238, 200, 0.25);
-}
-
-.bracket-frame::after {
-  bottom: 0;
-  right: 0;
-  border-bottom: 1px solid rgba(255, 238, 200, 0.25);
-  border-right: 1px solid rgba(255, 238, 200, 0.25);
-}
-
 /* Range slider */
 .slider {
   -webkit-appearance: none;
@@ -70,8 +45,8 @@ html {
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: #FFEEC8;
   cursor: pointer;
@@ -83,8 +58,8 @@ html {
 }
 
 .slider::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   background: #FFEEC8;
   cursor: pointer;
@@ -101,17 +76,46 @@ html {
   animation: pulse-slow 2s cubic-bezier(0.75, 0, 0.25, 1) infinite;
 }
 
-/* RTL adjustments */
-[dir="rtl"] .bracket-frame::before {
-  left: auto;
-  right: 0;
-  border-left: none;
-  border-right: 1px solid rgba(255, 238, 200, 0.25);
+/* Surface card utility */
+.card {
+  background: var(--color-surface-1);
+  border-radius: 12px;
 }
 
-[dir="rtl"] .bracket-frame::after {
-  right: auto;
-  left: 0;
-  border-right: none;
-  border-left: 1px solid rgba(255, 238, 200, 0.25);
+/* Gauge entrance animation */
+@keyframes gauge-enter {
+  from {
+    transform: scale(0.85) rotate(-10deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.gauge-entrance {
+  animation: gauge-enter 1s cubic-bezier(0.75, 0, 0.25, 1) forwards;
+}
+
+/* Character-by-character reveal */
+@keyframes char-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Time input dark mode */
+.time-input {
+  color-scheme: dark;
+}
+
+.time-input::-webkit-calendar-picker-indicator {
+  filter: invert(0.85) sepia(0.2) saturate(0.5) hue-rotate(10deg);
+  cursor: pointer;
 }

@@ -31,7 +31,7 @@ export default function HowItWorks() {
           open ? "max-h-96 opacity-100 mt-3" : "max-h-0 opacity-0"
         }`}
       >
-        <div className="bracket-frame px-5 py-4">
+        <div className="card px-5 py-5">
           <p className="font-sans text-sm text-cream/60 leading-relaxed mb-4">
             {t(lang, "howItWorksContent")}
           </p>
