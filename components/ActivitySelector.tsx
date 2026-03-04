@@ -3,6 +3,7 @@
 import { useLanguage } from "@/lib/LanguageContext";
 import { t } from "@/lib/i18n";
 import { ActivityType } from "@/lib/types";
+import { useHaptics } from "@/lib/haptics";
 
 interface Props {
   activity: ActivityType;
@@ -22,6 +23,7 @@ export default function ActivitySelector({
   onExitTimeChange,
 }: Props) {
   const { lang } = useLanguage();
+  const { trigger } = useHaptics();
 
   const maxDuration = activity === "shower" ? 20 : 30;
 
@@ -31,6 +33,7 @@ export default function ActivitySelector({
       <div className="flex items-center justify-center gap-4 mb-6">
         <button
           onClick={() => {
+            trigger("light");
             onActivityChange("shower");
             onDurationChange(Math.min(duration, 20));
           }}
@@ -56,7 +59,7 @@ export default function ActivitySelector({
         </button>
 
         <button
-          onClick={() => onActivityChange("toilet")}
+          onClick={() => { trigger("light"); onActivityChange("toilet"); }}
           className={`flex items-center gap-2 px-5 py-2.5 rounded-lg transition-all duration-500 ease-smooth ${
             activity === "toilet"
               ? "bg-surface-2 text-cream"
@@ -94,7 +97,7 @@ export default function ActivitySelector({
           min={3}
           max={maxDuration}
           value={duration}
-          onChange={(e) => onDurationChange(Number(e.target.value))}
+          onChange={(e) => { trigger("selection"); onDurationChange(Number(e.target.value)); }}
           className="slider w-full"
         />
         <div className="flex justify-between mt-1">
@@ -126,7 +129,7 @@ export default function ActivitySelector({
             min={1}
             max={5}
             value={exitTime}
-            onChange={(e) => onExitTimeChange(Number(e.target.value))}
+            onChange={(e) => { trigger("selection"); onExitTimeChange(Number(e.target.value)); }}
             className="slider w-full"
           />
           <div className="flex justify-between mt-1">

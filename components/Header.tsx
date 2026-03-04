@@ -2,9 +2,11 @@
 
 import { useLanguage } from "@/lib/LanguageContext";
 import { t } from "@/lib/i18n";
+import { useHaptics } from "@/lib/haptics";
 
 export default function Header() {
   const { lang, setLang } = useLanguage();
+  const { trigger } = useHaptics();
 
   return (
     <header>
@@ -20,7 +22,7 @@ export default function Header() {
 
         <div className="flex items-center gap-0 rounded-lg bg-surface-1 overflow-hidden">
           <button
-            onClick={() => setLang("en")}
+            onClick={() => { trigger("light"); setLang("en"); }}
             className={`px-3 py-1.5 text-sm font-mono transition-all duration-500 ease-smooth ${
               lang === "en"
                 ? "bg-surface-2 text-cream"
@@ -30,7 +32,7 @@ export default function Header() {
             EN
           </button>
           <button
-            onClick={() => setLang("he")}
+            onClick={() => { trigger("light"); setLang("he"); }}
             className={`px-3 py-1.5 text-sm font-mono transition-all duration-500 ease-smooth ${
               lang === "he"
                 ? "bg-surface-2 text-cream"

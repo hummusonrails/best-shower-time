@@ -1,9 +1,10 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, useRef } from "react";
 import { useLanguage } from "@/lib/LanguageContext";
 import { SafetyRecommendation } from "@/lib/types";
 import { useCountUp } from "@/hooks/useCountUp";
+import { useHaptics } from "@/lib/haptics";
 
 interface Props {
   recommendation: SafetyRecommendation | null;
@@ -45,10 +46,26 @@ function CharacterReveal({ text, level }: { text: string; level: string }) {
   );
 }
 
+const hapticMap = {
+  safe: "success",
+  risky: "warning",
+  dangerous: "error",
+} as const;
+
 export default function SafetyVerdict({ recommendation }: Props) {
   const { lang } = useLanguage();
+  const { trigger } = useHaptics();
   const [mounted, setMounted] = useState(false);
+  const prevLevel = useRef<string | null>(null);
   useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    if (!recommendation) return;
+    if (prevLevel.current !== null && prevLevel.current !== recommendation.level) {
+      trigger(hapticMap[recommendation.level]);
+    }
+    prevLevel.current = recommendation.level;
+  }, [recommendation?.level, trigger]);
   const hasScore = mounted && recommendation !== null;
   const displayScore = useCountUp(recommendation?.score ?? 0, hasScore);
 

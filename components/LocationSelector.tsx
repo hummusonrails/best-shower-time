@@ -5,6 +5,7 @@ import { useLanguage } from "@/lib/LanguageContext";
 import { t } from "@/lib/i18n";
 import { regions, Region } from "@/lib/regions";
 import { searchCities, getCityEnglishName } from "@/lib/cityNames";
+import { useHaptics } from "@/lib/haptics";
 
 interface Props {
   selectedRegion: string;
@@ -23,6 +24,7 @@ export default function LocationSelector({
   onCityChange,
 }: Props) {
   const { lang } = useLanguage();
+  const { trigger } = useHaptics();
   const [citySearch, setCitySearch] = useState("");
   const [showCityDropdown, setShowCityDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -57,6 +59,7 @@ export default function LocationSelector({
             <button
               key={r.id}
               onClick={() => {
+                trigger("selection");
                 onRegionChange(r.id);
                 onCityChange(null);
                 setCitySearch("");
@@ -114,6 +117,7 @@ export default function LocationSelector({
                 <button
                   key={city}
                   onClick={() => {
+                    trigger("light");
                     onCityChange(city);
                     setCitySearch("");
                     setShowCityDropdown(false);
