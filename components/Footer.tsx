@@ -41,6 +41,14 @@ export default function Footer({ lastUpdated }: Props) {
           </a>
         </p>
         <a
+          href="https://bestwalkingtime.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-xs text-cream/20 hover:text-cream/40 transition-colors duration-300 underline underline-offset-2 decoration-cream/10 hover:decoration-cream/25"
+        >
+          {lang === "he" ? "הזמן הטוב לטיול" : "Best Walk Time"}
+        </a>
+        <a
           href="https://buymeacoffee.com/bengreenberg"
           target="_blank"
           rel="noopener noreferrer"

@@ -11,6 +11,7 @@ import HowItWorks from "@/components/HowItWorks";
 import Footer from "@/components/Footer";
 import InstallPrompt from "@/components/InstallPrompt";
 import ScrollReveal from "@/components/ScrollReveal";
+import CrossPromoBanner from "@/components/CrossPromoBanner";
 import { ProcessedAlert, ActivityType, SafetyStats, SafetyRecommendation } from "@/lib/types";
 import { computeStats, getRecommendation } from "@/lib/safety";
 import { filterAlertsByRegion } from "@/lib/regions";
@@ -101,6 +102,7 @@ export default function Home() {
         <ScrollReveal direction="down">
           <Header />
         </ScrollReveal>
+        <CrossPromoBanner />
 
         <main className="flex flex-col items-center gap-10 pb-10">
           <ScrollReveal>
