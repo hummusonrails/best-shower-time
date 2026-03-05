@@ -1,16 +1,12 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { useLanguage } from "@/lib/LanguageContext";
-import { t } from "@/lib/i18n";
-import { regions, Region } from "@/lib/regions";
+import { useLanguage, useTranslation, useHaptics, regions, type Region } from "best-time-ui";
 import { searchCities, getCityEnglishName } from "@/lib/cityNames";
-import { useHaptics } from "@/lib/haptics";
 
 interface Props {
   selectedRegion: string;
   onRegionChange: (regionId: string) => void;
-  /** All unique city names extracted from current alert data */
   availableCities: string[];
   selectedCity: string | null;
   onCityChange: (city: string | null) => void;
@@ -24,12 +20,12 @@ export default function LocationSelector({
   onCityChange,
 }: Props) {
   const { lang } = useLanguage();
+  const { t } = useTranslation();
   const { trigger } = useHaptics();
   const [citySearch, setCitySearch] = useState("");
   const [showCityDropdown, setShowCityDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
@@ -50,10 +46,9 @@ export default function LocationSelector({
     <section className="w-full max-w-md mx-auto px-4">
       <div className="card px-5 py-5">
         <span className="font-mono text-xs text-cream/40 uppercase tracking-wider block mb-3">
-          {t(lang, "location")}
+          {t("location")}
         </span>
 
-        {/* Region grid */}
         <div className="flex flex-wrap gap-2 mb-4">
           {regions.map((r) => (
             <button
@@ -75,7 +70,6 @@ export default function LocationSelector({
           ))}
         </div>
 
-        {/* City search */}
         <div className="relative" ref={dropdownRef}>
           <input
             type="text"
@@ -94,7 +88,7 @@ export default function LocationSelector({
             onFocus={() => {
               if (citySearch.length >= 2) setShowCityDropdown(true);
             }}
-            placeholder={t(lang, "searchCity")}
+            placeholder={t("searchCity")}
             className="w-full bg-surface-2 rounded-lg px-3 py-2 font-mono text-sm text-cream placeholder:text-cream/25 focus:outline-none focus:ring-1 focus:ring-cream/15 transition-colors duration-300"
             dir={lang === "he" ? "rtl" : "ltr"}
           />

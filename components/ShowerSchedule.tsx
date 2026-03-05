@@ -1,11 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
-import { useLanguage } from "@/lib/LanguageContext";
-import { t } from "@/lib/i18n";
+import { useLanguage, useTranslation, useDeviceType, InstallPrompt } from "best-time-ui";
 import { syncScheduleToSW } from "./ServiceWorkerRegistration";
-import useDeviceType from "@/hooks/useDeviceType";
-import InstallPrompt from "@/components/InstallPrompt";
 
 interface ShowerScheduleProps {
   duration: number;
@@ -15,6 +12,7 @@ const STORAGE_KEY = "bst-shower-schedule";
 
 export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
   const { lang } = useLanguage();
+  const { t } = useTranslation();
   const { isMobile, isStandalone } = useDeviceType();
   const [enabled, setEnabled] = useState(false);
   const [time, setTime] = useState("07:00");
@@ -23,7 +21,6 @@ export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
   >("default");
   const backupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // Check notification support + permission on mount
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -34,7 +31,6 @@ export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
 
     setPermissionState(Notification.permission as "default" | "granted" | "denied");
 
-    // Restore saved schedule
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
       try {
@@ -49,7 +45,6 @@ export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
     }
   }, []);
 
-  // Save schedule + sync to SW whenever it changes
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -58,7 +53,6 @@ export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
     syncScheduleToSW();
   }, [enabled, time, duration]);
 
-  // Client-side backup timer
   const setupBackupTimer = useCallback(() => {
     if (backupTimerRef.current) {
       clearTimeout(backupTimerRef.current);
@@ -70,7 +64,6 @@ export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
     const now = new Date();
     const [h, m] = time.split(":").map(Number);
 
-    // Reminder fires 1 minute before scheduled time
     let reminderH = h;
     let reminderM = m - 1;
     if (reminderM < 0) {
@@ -81,13 +74,11 @@ export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
     const target = new Date();
     target.setHours(reminderH, reminderM, 0, 0);
 
-    // If target is in the past, schedule for tomorrow
     if (target.getTime() <= now.getTime()) {
       target.setDate(target.getDate() + 1);
     }
 
     const ms = target.getTime() - now.getTime();
-    // Only set timer if within 24 hours
     if (ms > 0 && ms < 24 * 60 * 60 * 1000) {
       backupTimerRef.current = setTimeout(async () => {
         try {
@@ -154,7 +145,6 @@ export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
     setEnabled(true);
   };
 
-  // Hide entirely on desktop
   if (!isMobile) return null;
 
   return (
@@ -163,7 +153,7 @@ export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
       <div className="card px-5 py-5 w-full">
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-serif text-lg md:text-xl text-cream/90">
-            {t(lang, "showerReminder")}
+            {t("showerReminder")}
           </h3>
           <button
             onClick={handleToggle}
@@ -171,7 +161,7 @@ export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
             className={`relative w-11 h-6 rounded-full transition-colors duration-300 ${
               enabled ? "bg-safety" : "bg-cream/20"
             } ${permissionState === "unsupported" ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
-            aria-label={t(lang, "showerReminder")}
+            aria-label={t("showerReminder")}
           >
             <span
               className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-bg transition-transform duration-300 ${
@@ -182,7 +172,7 @@ export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
         </div>
 
         <p className="text-xs text-cream/40 font-mono mb-3">
-          {t(lang, "reminderDescription")}
+          {t("reminderDescription")}
         </p>
 
         <div className="flex items-center gap-3">
@@ -201,12 +191,12 @@ export default function ShowerSchedule({ duration }: ShowerScheduleProps) {
 
         {permissionState === "denied" && (
           <p className="text-xs text-danger/70 font-mono mt-2">
-            {t(lang, "notificationsDenied")}
+            {t("notificationsDenied")}
           </p>
         )}
         {permissionState === "unsupported" && (
           <p className="text-xs text-warning/70 font-mono mt-2">
-            {t(lang, "notificationsUnsupported")}
+            {t("notificationsUnsupported")}
           </p>
         )}
       </div>

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@source "../node_modules/best-time-ui/src/**/*.{ts,tsx}";
 
 @theme inline {
   --color-cream: #FFEEC8;

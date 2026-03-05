@@ -1,4 +1,4 @@
-import { ProcessedAlert } from "./types";
+import { type ProcessedAlert } from "best-time-ui";
 
 let cache: { data: ProcessedAlert[]; timestamp: number } | null = null;
 const CACHE_DURATION = 30 * 1000; // 30 seconds

@@ -1,9 +1,7 @@
 "use client";
 
-import { useLanguage } from "@/lib/LanguageContext";
-import { t } from "@/lib/i18n";
+import { useLanguage, useTranslation, useHaptics } from "best-time-ui";
 import { ActivityType } from "@/lib/types";
-import { useHaptics } from "@/lib/haptics";
 
 interface Props {
   activity: ActivityType;
@@ -23,6 +21,7 @@ export default function ActivitySelector({
   onExitTimeChange,
 }: Props) {
   const { lang } = useLanguage();
+  const { t } = useTranslation();
   const { trigger } = useHaptics();
 
   const maxDuration = activity === "shower" ? 20 : 30;
@@ -55,7 +54,7 @@ export default function ActivitySelector({
           >
             <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          <span className="font-mono text-sm">{t(lang, "shower")}</span>
+          <span className="font-mono text-sm">{t("shower")}</span>
         </button>
 
         <button
@@ -78,7 +77,7 @@ export default function ActivitySelector({
           >
             <path d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12l1 6h12l1-6" />
           </svg>
-          <span className="font-mono text-sm">{t(lang, "toilet")}</span>
+          <span className="font-mono text-sm">{t("toilet")}</span>
         </button>
       </div>
 
@@ -86,10 +85,10 @@ export default function ActivitySelector({
       <div className="card px-6 py-5">
         <div className="flex items-center justify-between mb-3">
           <span className="font-mono text-xs text-cream/50 uppercase tracking-wider">
-            {t(lang, "activityDuration")}
+            {t("activityDuration")}
           </span>
           <span className="font-mono text-lg text-cream">
-            {duration} {t(lang, "minutes")}
+            {duration} {t("minutes")}
           </span>
         </div>
         <input
@@ -115,14 +114,14 @@ export default function ActivitySelector({
         <div className="card px-6 py-5">
           <div className="flex items-center justify-between mb-1">
             <span className="font-mono text-xs text-cream/50 uppercase tracking-wider">
-              {t(lang, "exitTime")}
+              {t("exitTime")}
             </span>
             <span className="font-mono text-lg text-cream">
-              {exitTime} {t(lang, "minutes")}
+              {exitTime} {t("minutes")}
             </span>
           </div>
           <p className="font-mono text-xs text-cream/25 mb-3">
-            {t(lang, "exitTimeDesc")}
+            {t("exitTimeDesc")}
           </p>
           <input
             type="range"

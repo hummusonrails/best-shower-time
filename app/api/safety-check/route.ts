@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAlerts } from "@/lib/alertsCache";
-import { computeStats, getRecommendation } from "@/lib/safety";
-import { filterAlertsByRegion } from "@/lib/regions";
+import { computeStats, filterAlertsByRegion } from "best-time-ui";
+import { getRecommendation } from "@/lib/safety";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = request.nextUrl;
@@ -11,9 +11,8 @@ export async function GET(request: NextRequest) {
 
   const alerts = await getAlerts();
 
-  // Filter by location (same logic as client-side)
   const filtered = city
-    ? alerts.filter((a) => a.cities.some((c) => c.includes(city)))
+    ? alerts.filter((a) => a.cities.some((c: string) => c.includes(city)))
     : alerts.filter((a) => filterAlertsByRegion(a.cities, region));
 
   const stats = computeStats(filtered);

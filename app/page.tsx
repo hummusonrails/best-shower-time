@@ -1,20 +1,26 @@
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
-import Header from "@/components/Header";
-import SafetyVerdict from "@/components/SafetyVerdict";
+import {
+  Header,
+  SafetyVerdict,
+  InstallPrompt,
+  StatsGrid,
+  AlertTimeline,
+  HowItWorks,
+  Footer,
+  ScrollReveal,
+  CrossPromoBanner,
+  computeStats,
+  filterAlertsByRegion,
+  type ProcessedAlert,
+  type SafetyStats,
+  type SafetyRecommendation,
+} from "best-time-ui";
 import ActivitySelector from "@/components/ActivitySelector";
 import LocationSelector from "@/components/LocationSelector";
-import StatsGrid from "@/components/StatsGrid";
-import AlertTimeline from "@/components/AlertTimeline";
-import HowItWorks from "@/components/HowItWorks";
-import Footer from "@/components/Footer";
-import InstallPrompt from "@/components/InstallPrompt";
-import ScrollReveal from "@/components/ScrollReveal";
-import CrossPromoBanner from "@/components/CrossPromoBanner";
-import { ProcessedAlert, ActivityType, SafetyStats, SafetyRecommendation } from "@/lib/types";
-import { computeStats, getRecommendation } from "@/lib/safety";
-import { filterAlertsByRegion } from "@/lib/regions";
+import { getRecommendation } from "@/lib/safety";
+import { ActivityType } from "@/lib/types";
 
 const REFRESH_INTERVAL = 30_000;
 
@@ -102,7 +108,12 @@ export default function Home() {
         <ScrollReveal direction="down">
           <Header />
         </ScrollReveal>
-        <CrossPromoBanner />
+        <CrossPromoBanner
+          href="https://bestwalkingtime.com"
+          name="Best Walk Time"
+          promptEn="Need to go outside too? Check out"
+          promptHe="גם צריכים לצאת? בדקו את"
+        />
 
         <main className="flex flex-col items-center gap-10 pb-10">
           <ScrollReveal>
@@ -142,7 +153,14 @@ export default function Home() {
         </main>
 
         <ScrollReveal>
-          <Footer lastUpdated={lastUpdated} />
+          <Footer
+            lastUpdated={lastUpdated}
+            sisterSite={{
+              href: "https://bestwalkingtime.com",
+              nameEn: "Best Walk Time",
+              nameHe: "הזמן הטוב לטיול",
+            }}
+          />
         </ScrollReveal>
       </div>
     </div>
