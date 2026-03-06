@@ -164,7 +164,7 @@ export default function Home() {
               {
                 href: "https://bestsleepingtime.com",
                 nameEn: "Best Sleep Time",
-                nameHe: "הזמן הטוב לתנומה",
+                nameHe: "הזמן הטוב לשינה",
               },
             ]}
           />
