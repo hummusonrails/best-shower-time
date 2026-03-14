@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
+export const revalidate = 86400; // Cache OG image for 24 hours
 
 export const alt = "Best Shower Time - Real-time rocket alert analysis for daily safety decisions";
 export const size = {

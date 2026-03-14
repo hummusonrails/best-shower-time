@@ -1,7 +1,7 @@
 import { type ProcessedAlert } from "best-time-ui";
 
 let cache: { data: ProcessedAlert[]; timestamp: number } | null = null;
-const CACHE_DURATION = 30 * 1000; // 30 seconds
+const CACHE_DURATION = 60 * 1000; // 60 seconds
 
 export async function getAlerts(): Promise<ProcessedAlert[]> {
   const now = Date.now();

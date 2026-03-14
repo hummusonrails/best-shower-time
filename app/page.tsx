@@ -22,7 +22,7 @@ import LocationSelector from "@/components/LocationSelector";
 import { getRecommendation } from "@/lib/safety";
 import { ActivityType } from "@/lib/types";
 
-const REFRESH_INTERVAL = 30_000;
+const REFRESH_INTERVAL = 120_000;
 
 export default function Home() {
   const [alerts, setAlerts] = useState<ProcessedAlert[]>([]);
