@@ -1,5 +1,4 @@
 import { type ProcessedAlert } from "best-time-ui";
-import { createClient } from "@libsql/client/http";
 
 let cache: { data: ProcessedAlert[]; timestamp: number } | null = null;
 const CACHE_DURATION = 60 * 1000; // 60 seconds
@@ -61,16 +60,11 @@ async function fetchFromTzevaAdom(): Promise<ProcessedAlert[]> {
 async function fetchFromTurso(): Promise<ProcessedAlert[]> {
   const rawUrl = process.env.TURSO_DB_URL;
   const token = process.env.TURSO_AUTH_TOKEN;
-  if (!rawUrl || !token) {
-    console.log("[alertsCache] Turso env vars missing:", { hasUrl: !!rawUrl, hasToken: !!token });
-    return [];
-  }
+  if (!rawUrl || !token) return [];
 
-  const url = rawUrl.trim().replace("libsql://", "https://");
-  console.log("[alertsCache] Turso connecting to:", url.substring(0, 30) + "...");
-
+  const { createClient } = await import("@libsql/client/http");
   const db = createClient({
-    url,
+    url: rawUrl.trim().replace("libsql://", "https://"),
     authToken: token.trim(),
   });
 
@@ -105,9 +99,8 @@ export async function getAlerts(): Promise<ProcessedAlert[]> {
     let supplemental: ProcessedAlert[] = [];
     try {
       supplemental = await fetchFromTurso();
-      console.log(`[alertsCache] Turso returned ${supplemental.length} alerts`);
-    } catch (tursoErr) {
-      console.error("[alertsCache] Turso fetch failed:", tursoErr);
+    } catch {
+      // Turso unavailable — use primary only
     }
 
     // Merge: deduplicate by timestamp
