@@ -3,6 +3,17 @@ import { type ProcessedAlert } from "best-time-ui";
 let cache: { data: ProcessedAlert[]; timestamp: number } | null = null;
 const CACHE_DURATION = 60 * 1000; // 60 seconds
 
+// Fetch last 7 days of alerts from SirenWise (backed by Turso DB)
+const SIRENWISE_API = "https://sirenwise.com/api/alerts";
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+
+interface SirenWiseAlert {
+  id: string;
+  timestamp: number;
+  cities: string[];
+  threat: number;
+}
+
 export async function getAlerts(): Promise<ProcessedAlert[]> {
   const now = Date.now();
 
@@ -11,12 +22,12 @@ export async function getAlerts(): Promise<ProcessedAlert[]> {
   }
 
   try {
+    const since = now - SEVEN_DAYS_MS;
     const response = await fetch(
-      "https://api.tzevaadom.co.il/alerts-history",
+      `${SIRENWISE_API}?since=${since}`,
       {
         headers: {
           Accept: "application/json",
-          "Content-Type": "application/json",
         },
         next: { revalidate: 30 },
       }
@@ -26,47 +37,22 @@ export async function getAlerts(): Promise<ProcessedAlert[]> {
       throw new Error(`API responded with ${response.status}`);
     }
 
-    const rawGroups = await response.json();
+    const alerts: SirenWiseAlert[] = await response.json();
 
-    interface RawAlert {
-      time?: number;
-      cities?: string[];
-      threat?: number;
-      isDrill?: boolean;
-    }
-    interface RawGroup {
-      id?: number;
-      alerts?: RawAlert[];
-    }
-
-    const groups: RawGroup[] = Array.isArray(rawGroups) ? rawGroups : [];
-
-    const processed: ProcessedAlert[] = [];
-    for (const group of groups) {
-      if (!Array.isArray(group.alerts)) continue;
-      for (const alert of group.alerts) {
-        if (alert.isDrill) continue;
-
-        const ts =
-          typeof alert.time === "number"
-            ? alert.time * 1000 // API returns Unix seconds, convert to ms
-            : Date.now();
-
-        const date = new Date(ts);
-
-        processed.push({
-          id: `${group.id ?? 0}-${ts}`,
-          timestamp: ts,
-          date: date.toLocaleDateString("en-US"),
-          time: date.toLocaleTimeString("en-US", {
-            hour: "2-digit",
-            minute: "2-digit",
-          }),
-          cities: Array.isArray(alert.cities) ? alert.cities : ["Unknown"],
-          threat: typeof alert.threat === "number" ? alert.threat : 0,
-        });
-      }
-    }
+    const processed: ProcessedAlert[] = alerts.map((alert) => {
+      const date = new Date(alert.timestamp);
+      return {
+        id: alert.id,
+        timestamp: alert.timestamp,
+        date: date.toLocaleDateString("en-US"),
+        time: date.toLocaleTimeString("en-US", {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+        cities: alert.cities,
+        threat: alert.threat,
+      };
+    });
 
     cache = { data: processed, timestamp: now };
     return processed;
