@@ -29,7 +29,7 @@ export async function getAlerts(): Promise<ProcessedAlert[]> {
         headers: {
           Accept: "application/json",
         },
-        next: { revalidate: 30 },
+        cache: "no-store",
       }
     );
 
