@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@libsql/client": "^0.17.0",
     "best-time-ui": "github:hummusonrails/best-time-ui",
     "next": "16.1.6",
     "react": "19.2.3",

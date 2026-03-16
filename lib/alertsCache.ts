@@ -1,10 +1,10 @@
 import { type ProcessedAlert } from "best-time-ui";
+import { createClient } from "@libsql/client/http";
 
 let cache: { data: ProcessedAlert[]; timestamp: number } | null = null;
 const CACHE_DURATION = 60 * 1000; // 60 seconds
 
 const TZEVA_ADOM_API = "https://api.tzevaadom.co.il/alerts-history";
-const SIRENWISE_API = "https://sirenwise.com/api/alerts";
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
 
 interface RawAlert {
@@ -16,13 +16,6 @@ interface RawAlert {
 interface RawGroup {
   id?: number;
   alerts?: RawAlert[];
-}
-
-interface SirenWiseAlert {
-  id: string;
-  timestamp: number;
-  cities: string[];
-  threat: number;
 }
 
 function toProcessed(id: string, ts: number, cities: string[], threat: number): ProcessedAlert {
@@ -65,16 +58,30 @@ async function fetchFromTzevaAdom(): Promise<ProcessedAlert[]> {
   return processed;
 }
 
-async function fetchFromSirenWise(): Promise<ProcessedAlert[]> {
-  const since = Date.now() - SEVEN_DAYS_MS;
-  const response = await fetch(`${SIRENWISE_API}?since=${since}`, {
-    headers: { Accept: "application/json" },
-    cache: "no-store",
-  });
-  if (!response.ok) throw new Error(`SirenWise API: ${response.status}`);
+async function fetchFromTurso(): Promise<ProcessedAlert[]> {
+  const url = process.env.TURSO_DB_URL;
+  const token = process.env.TURSO_AUTH_TOKEN;
+  if (!url || !token) return [];
 
-  const alerts: SirenWiseAlert[] = await response.json();
-  return alerts.map((a) => toProcessed(a.id, a.timestamp, a.cities, a.threat));
+  const db = createClient({
+    url: url.replace("libsql://", "https://"),
+    authToken: token.trim(),
+  });
+
+  const since = Date.now() - SEVEN_DAYS_MS;
+  const result = await db.execute({
+    sql: "SELECT id, timestamp, cities, threat FROM alerts WHERE timestamp > ? ORDER BY timestamp DESC LIMIT 5000",
+    args: [since],
+  });
+
+  return result.rows.map((r) =>
+    toProcessed(
+      r.id as string,
+      r.timestamp as number,
+      JSON.parse(r.cities as string),
+      r.threat as number
+    )
+  );
 }
 
 export async function getAlerts(): Promise<ProcessedAlert[]> {
@@ -85,18 +92,18 @@ export async function getAlerts(): Promise<ProcessedAlert[]> {
   }
 
   try {
-    // Primary: Tzeva Adom API (~28h of recent data, always works)
+    // Primary: Tzeva Adom API (~28h of recent data)
     const primary = await fetchFromTzevaAdom();
 
-    // Supplemental: SirenWise API (7 days of data, may fail)
+    // Supplemental: Turso DB (7 days of historical data)
     let supplemental: ProcessedAlert[] = [];
     try {
-      supplemental = await fetchFromSirenWise();
+      supplemental = await fetchFromTurso();
     } catch {
-      // SirenWise unavailable — use primary only
+      // Turso unavailable — use primary only
     }
 
-    // Merge: deduplicate by keeping unique timestamps+cities combos
+    // Merge: deduplicate by timestamp
     const seen = new Set(primary.map((a) => `${a.timestamp}`));
     const merged = [...primary];
     for (const alert of supplemental) {
@@ -106,17 +113,13 @@ export async function getAlerts(): Promise<ProcessedAlert[]> {
       }
     }
 
-    // Sort newest first
     merged.sort((a, b) => b.timestamp - a.timestamp);
 
     cache = { data: merged, timestamp: now };
     return merged;
   } catch (error) {
     console.error("Failed to fetch alerts:", error);
-
-    if (cache) {
-      return cache.data;
-    }
+    if (cache) return cache.data;
     return [];
   }
 }
