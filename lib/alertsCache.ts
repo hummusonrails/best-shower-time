@@ -59,12 +59,18 @@ async function fetchFromTzevaAdom(): Promise<ProcessedAlert[]> {
 }
 
 async function fetchFromTurso(): Promise<ProcessedAlert[]> {
-  const url = process.env.TURSO_DB_URL;
+  const rawUrl = process.env.TURSO_DB_URL;
   const token = process.env.TURSO_AUTH_TOKEN;
-  if (!url || !token) return [];
+  if (!rawUrl || !token) {
+    console.log("[alertsCache] Turso env vars missing:", { hasUrl: !!rawUrl, hasToken: !!token });
+    return [];
+  }
+
+  const url = rawUrl.trim().replace("libsql://", "https://");
+  console.log("[alertsCache] Turso connecting to:", url.substring(0, 30) + "...");
 
   const db = createClient({
-    url: url.replace("libsql://", "https://"),
+    url,
     authToken: token.trim(),
   });
 
@@ -99,8 +105,9 @@ export async function getAlerts(): Promise<ProcessedAlert[]> {
     let supplemental: ProcessedAlert[] = [];
     try {
       supplemental = await fetchFromTurso();
-    } catch {
-      // Turso unavailable — use primary only
+      console.log(`[alertsCache] Turso returned ${supplemental.length} alerts`);
+    } catch (tursoErr) {
+      console.error("[alertsCache] Turso fetch failed:", tursoErr);
     }
 
     // Merge: deduplicate by timestamp
