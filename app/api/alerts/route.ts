@@ -67,8 +67,8 @@ export async function GET() {
           r.threat as number
         )
       );
-    } catch {
-      // Turso unavailable — use primary only
+    } catch (err) {
+      console.error("[alerts] Turso supplemental failed:", err instanceof Error ? err.message : err);
     }
 
     // Merge: deduplicate by timestamp
