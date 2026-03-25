@@ -136,11 +136,6 @@ export default function Home() {
           <ScrollReveal>
             <SafetyVerdict recommendation={recommendation} />
           </ScrollReveal>
-          {preAlertStatus && (
-            <div className="w-full px-4">
-              <PreAlertCard preAlertStatus={preAlertStatus} preAlerts={preAlerts} />
-            </div>
-          )}
           <ScrollReveal direction="left" delay={100}>
             <ActivitySelector
               activity={activity}
@@ -166,8 +161,13 @@ export default function Home() {
           <ScrollReveal delay={150} className="w-full">
             <StatsGrid stats={stats} />
           </ScrollReveal>
+          {preAlertStatus && (
+            <div className="w-full px-4">
+              <PreAlertCard preAlertStatus={preAlertStatus} preAlerts={preAlerts} />
+            </div>
+          )}
           <ScrollReveal delay={100} className="w-full">
-            <AlertTimeline alerts={filteredAlerts} />
+            <AlertTimeline alerts={filteredAlerts} preAlerts={preAlerts} />
           </ScrollReveal>
           <ScrollReveal>
             <HowItWorks />
