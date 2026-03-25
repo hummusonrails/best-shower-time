@@ -3,10 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Header,
-  SafetyVerdict,
   InstallPrompt,
-  StatsGrid,
-  AlertTimeline,
   HowItWorks,
   Footer,
   ScrollReveal,
@@ -22,6 +19,10 @@ import {
 } from "best-time-ui";
 import ActivitySelector from "@/components/ActivitySelector";
 import LocationSelector from "@/components/LocationSelector";
+import SafetyVerdictWithPreAlerts from "@/components/SafetyVerdictWithPreAlerts";
+import StatsGridWithPreAlerts from "@/components/StatsGridWithPreAlerts";
+import AlertTimelineWithPreAlerts from "@/components/AlertTimelineWithPreAlerts";
+import PreAlertStatusCard from "@/components/PreAlertStatusCard";
 import { getRecommendation } from "@/lib/safety";
 import { usePreAlerts } from "@/hooks/usePreAlerts";
 import { ActivityType } from "@/lib/types";
@@ -136,20 +137,16 @@ export default function Home() {
 
         <main className="flex flex-col items-center gap-10 pb-10">
           <ScrollReveal>
-            <SafetyVerdict recommendation={recommendation} />
+            <SafetyVerdictWithPreAlerts
+              recommendation={recommendation}
+              preAlertStatus={preAlertStatus}
+            />
           </ScrollReveal>
-          {preAlertStatus?.warningCount2h !== undefined &&
-            preAlertStatus.warningCount2h >= 2 && (
-              <div className="w-full px-4 py-3 rounded-lg bg-amber-900/30 border border-amber-600/40 text-amber-200 text-sm text-center">
-                {t("prealert.activeWarnings")}
-              </div>
-            )}
-          {preAlertStatus?.hasRecentExit &&
-            !(preAlertStatus.warningCount2h >= 2) && (
-              <div className="w-full px-4 py-3 rounded-lg bg-emerald-900/30 border border-emerald-600/40 text-emerald-200 text-sm text-center">
-                {t("prealert.goodWindow")}
-              </div>
-            )}
+          {preAlertStatus && (
+            <ScrollReveal delay={50}>
+              <PreAlertStatusCard preAlertStatus={preAlertStatus} />
+            </ScrollReveal>
+          )}
           <ScrollReveal direction="left" delay={100}>
             <ActivitySelector
               activity={activity}
@@ -173,10 +170,10 @@ export default function Home() {
             />
           </ScrollReveal>
           <ScrollReveal delay={150} className="w-full">
-            <StatsGrid stats={stats} />
+            <StatsGridWithPreAlerts stats={stats} preAlertStatus={preAlertStatus} />
           </ScrollReveal>
           <ScrollReveal delay={100} className="w-full">
-            <AlertTimeline alerts={filteredAlerts} />
+            <AlertTimelineWithPreAlerts alerts={filteredAlerts} preAlerts={preAlerts} />
           </ScrollReveal>
           <ScrollReveal>
             <HowItWorks />

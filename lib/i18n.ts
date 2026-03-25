@@ -17,6 +17,10 @@ const siteTranslations: Translations = {
       "Multiple warning events detected recently — shorter showers recommended",
     "prealert.goodWindow":
       "Recent event concluded — good window for a quick shower",
+    "prealert.title": "Pre-Alert Activity",
+    "prealert.warnings2h": "in 2h",
+    "prealert.warnings6h": "in 6h",
+    "prealert.exitCleared": "Cleared",
   },
   he: {
     appName: "הזמן הטוב למקלחת",
@@ -34,6 +38,10 @@ const siteTranslations: Translations = {
       "זוהו מספר אירועי אזהרה לאחרונה — מומלץ למקלחת קצרה",
     "prealert.goodWindow":
       "אירוע אחרון הסתיים — חלון טוב למקלחת מהירה",
+    "prealert.title": "פעילות התרעה מוקדמת",
+    "prealert.warnings2h": "ב-2 שע׳",
+    "prealert.warnings6h": "ב-6 שע׳",
+    "prealert.exitCleared": "ירידת מתח",
   },
 };
 
