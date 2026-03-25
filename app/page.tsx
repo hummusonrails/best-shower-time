@@ -19,9 +19,7 @@ import {
 } from "best-time-ui";
 import ActivitySelector from "@/components/ActivitySelector";
 import LocationSelector from "@/components/LocationSelector";
-import SafetyVerdictWithPreAlerts from "@/components/SafetyVerdictWithPreAlerts";
-import StatsGridWithPreAlerts from "@/components/StatsGridWithPreAlerts";
-import AlertTimelineWithPreAlerts from "@/components/AlertTimelineWithPreAlerts";
+import { SafetyVerdict, StatsGrid, AlertTimeline } from "best-time-ui";
 import PreAlertStatusCard from "@/components/PreAlertStatusCard";
 import { getRecommendation } from "@/lib/safety";
 import { usePreAlerts } from "@/hooks/usePreAlerts";
@@ -137,15 +135,12 @@ export default function Home() {
 
         <main className="flex flex-col items-center gap-10 pb-10">
           <ScrollReveal>
-            <SafetyVerdictWithPreAlerts
-              recommendation={recommendation}
-              preAlertStatus={preAlertStatus}
-            />
+            <SafetyVerdict recommendation={recommendation} />
           </ScrollReveal>
           {preAlertStatus && (
-            <ScrollReveal delay={50}>
-              <PreAlertStatusCard preAlertStatus={preAlertStatus} />
-            </ScrollReveal>
+            <div className="w-full px-4">
+              <PreAlertStatusCard preAlertStatus={preAlertStatus} selectedRegion={selectedRegion} />
+            </div>
           )}
           <ScrollReveal direction="left" delay={100}>
             <ActivitySelector
@@ -170,10 +165,10 @@ export default function Home() {
             />
           </ScrollReveal>
           <ScrollReveal delay={150} className="w-full">
-            <StatsGridWithPreAlerts stats={stats} preAlertStatus={preAlertStatus} />
+            <StatsGrid stats={stats} />
           </ScrollReveal>
           <ScrollReveal delay={100} className="w-full">
-            <AlertTimelineWithPreAlerts alerts={filteredAlerts} preAlerts={preAlerts} />
+            <AlertTimeline alerts={filteredAlerts} />
           </ScrollReveal>
           <ScrollReveal>
             <HowItWorks />
