@@ -139,7 +139,7 @@ export default function Home() {
           </ScrollReveal>
           {preAlertStatus && (
             <div className="w-full px-4">
-              <PreAlertStatusCard preAlertStatus={preAlertStatus} selectedRegion={selectedRegion} />
+              <PreAlertStatusCard preAlertStatus={preAlertStatus} preAlerts={preAlerts} selectedRegion={selectedRegion} />
             </div>
           )}
           <ScrollReveal direction="left" delay={100}>

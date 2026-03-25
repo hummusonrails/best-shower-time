@@ -1,18 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { useTranslation, useLanguage, type PreAlertStatus } from "best-time-ui";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { useTranslation, useLanguage, type PreAlertStatus, type PreAlert } from "best-time-ui";
 
 interface Props {
   preAlertStatus: PreAlertStatus;
+  preAlerts: PreAlert[];
   selectedRegion: string;
 }
 
-export default function PreAlertStatusCard({ preAlertStatus, selectedRegion }: Props) {
+export default function PreAlertStatusCard({ preAlertStatus, preAlerts, selectedRegion }: Props) {
   const [showModal, setShowModal] = useState(false);
+  const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
   const { t } = useTranslation();
   const { lang } = useLanguage();
   const isHe = lang === "he";
+
+  useEffect(() => {
+    setPortalRoot(document.body);
+  }, []);
 
   const { warningCount2h, warningCount6h, lastWarningMinutesAgo, hasActiveWarning, hasRecentExit } =
     preAlertStatus;
@@ -27,7 +34,13 @@ export default function PreAlertStatusCard({ preAlertStatus, selectedRegion }: P
     return `${hours}h`;
   };
 
-  const isRegionSpecific = selectedRegion !== "all";
+  // Determine actual regions from the pre-alert data
+  const allRegions = new Set<string>();
+  for (const pa of preAlerts) {
+    for (const r of pa.regions) allRegions.add(r);
+  }
+  const hasSpecificRegions = allRegions.size > 0;
+  const regionList = Array.from(allRegions).map(r => r.replace(/-/g, " ")).join(", ");
 
   // Severity level for styling
   const severity = hasActiveWarning ? "high" : warningCount2h >= 2 ? "elevated" : "low";
@@ -86,52 +99,55 @@ export default function PreAlertStatusCard({ preAlertStatus, selectedRegion }: P
         </div>
       </button>
 
-      {/* Details Modal */}
-      {showModal && (
+      {/* Details Modal — rendered via portal to escape overflow/transform containers */}
+      {showModal && portalRoot && createPortal(
         <div
-          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm"
+          className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center bg-black/80 backdrop-blur-sm"
           onClick={() => setShowModal(false)}
+          style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0 }}
         >
           <div
-            className="w-full max-w-md bg-surface-1 border-t sm:border border-cream/10 rounded-t-2xl sm:rounded-2xl p-6 space-y-4 max-h-[80vh] overflow-y-auto"
+            className="w-full max-w-md bg-[#1a1a1a] border-t sm:border border-cream/10 rounded-t-2xl sm:rounded-2xl p-6 space-y-4 max-h-[80vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className="font-serif text-base text-cream">
+            <h2 className="font-serif text-base text-[#f5f0e8]">
               {t("prealert.modalTitle")}
             </h2>
 
-            <p className="text-xs text-cream/50 leading-relaxed">
+            <p className="text-xs text-[#f5f0e8]/50 leading-relaxed">
               {t("prealert.modalDesc")}
             </p>
 
             {/* Stats */}
             <div className="flex gap-3">
-              <div className="flex-1 bg-surface-2 rounded-lg p-3 text-center">
+              <div className="flex-1 bg-[#252525] rounded-lg p-3 text-center">
                 <div className="font-mono text-xl text-amber-400">{warningCount2h}</div>
-                <div className="font-mono text-[8px] text-cream/30 uppercase tracking-wider mt-0.5">
+                <div className="font-mono text-[8px] text-[#f5f0e8]/30 uppercase tracking-wider mt-0.5">
                   {isHe ? "2 שעות" : "2 hours"}
                 </div>
               </div>
-              <div className="flex-1 bg-surface-2 rounded-lg p-3 text-center">
-                <div className="font-mono text-xl text-cream/50">{warningCount6h}</div>
-                <div className="font-mono text-[8px] text-cream/30 uppercase tracking-wider mt-0.5">
+              <div className="flex-1 bg-[#252525] rounded-lg p-3 text-center">
+                <div className="font-mono text-xl text-[#f5f0e8]/50">{warningCount6h}</div>
+                <div className="font-mono text-[8px] text-[#f5f0e8]/30 uppercase tracking-wider mt-0.5">
                   {isHe ? "6 שעות" : "6 hours"}
                 </div>
               </div>
-              <div className="flex-1 bg-surface-2 rounded-lg p-3 text-center">
-                <div className={`font-mono text-xl ${hasRecentExit ? "text-emerald-400" : "text-cream/20"}`}>
+              <div className="flex-1 bg-[#252525] rounded-lg p-3 text-center">
+                <div className={`font-mono text-xl ${hasRecentExit ? "text-emerald-400" : "text-[#f5f0e8]/20"}`}>
                   {hasRecentExit ? "✓" : "—"}
                 </div>
-                <div className="font-mono text-[8px] text-cream/30 uppercase tracking-wider mt-0.5">
+                <div className="font-mono text-[8px] text-[#f5f0e8]/30 uppercase tracking-wider mt-0.5">
                   {isHe ? "סיום" : "All clear"}
                 </div>
               </div>
             </div>
 
-            {/* Region context */}
-            <p className="text-[11px] text-cream/30 italic">
-              {isRegionSpecific
-                ? t("prealert.regionNote.regional")
+            {/* Region context — based on actual pre-alert data */}
+            <p className="text-[11px] text-[#f5f0e8]/30 italic capitalize">
+              {hasSpecificRegions
+                ? (isHe
+                    ? `אזהרות אלו הופצו באזורים: ${regionList}`
+                    : `These warnings were issued in: ${regionList}`)
                 : t("prealert.regionNote.nationwide")}
             </p>
 
@@ -140,19 +156,20 @@ export default function PreAlertStatusCard({ preAlertStatus, selectedRegion }: P
               <div className="font-mono text-[9px] text-amber-400/60 uppercase tracking-wider mb-1.5">
                 {t("prealert.scoreImpact")}
               </div>
-              <p className="text-xs text-cream/60 leading-relaxed">
+              <p className="text-xs text-[#f5f0e8]/60 leading-relaxed">
                 {getScoreImpact()}
               </p>
             </div>
 
             <button
               onClick={() => setShowModal(false)}
-              className="w-full py-2 bg-surface-2 hover:bg-surface-2/80 rounded-lg font-mono text-xs text-cream/40 transition-colors"
+              className="w-full py-2.5 bg-[#252525] hover:bg-[#303030] rounded-lg font-mono text-xs text-[#f5f0e8]/40 transition-colors"
             >
               {t("prealert.close")}
             </button>
           </div>
-        </div>
+        </div>,
+        portalRoot
       )}
     </>
   );
