@@ -19,8 +19,7 @@ import {
 } from "best-time-ui";
 import ActivitySelector from "@/components/ActivitySelector";
 import LocationSelector from "@/components/LocationSelector";
-import { SafetyVerdict, StatsGrid, AlertTimeline } from "best-time-ui";
-import PreAlertStatusCard from "@/components/PreAlertStatusCard";
+import { SafetyVerdict, StatsGrid, AlertTimeline, PreAlertCard } from "best-time-ui";
 import { getRecommendation } from "@/lib/safety";
 import { usePreAlerts } from "@/hooks/usePreAlerts";
 import { ActivityType } from "@/lib/types";
@@ -139,7 +138,7 @@ export default function Home() {
           </ScrollReveal>
           {preAlertStatus && (
             <div className="w-full px-4">
-              <PreAlertStatusCard preAlertStatus={preAlertStatus} preAlerts={preAlerts} selectedRegion={selectedRegion} />
+              <PreAlertCard preAlertStatus={preAlertStatus} preAlerts={preAlerts} />
             </div>
           )}
           <ScrollReveal direction="left" delay={100}>
