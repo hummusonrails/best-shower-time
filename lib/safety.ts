@@ -1,10 +1,28 @@
-import { type SafetyStats, type SafetyLevel, type SafetyRecommendation } from "best-time-ui";
+import {
+  type SafetyStats,
+  type SafetyLevel,
+  type SafetyRecommendation,
+  type PreAlertStatus,
+  calculateSafetyScore,
+} from "best-time-ui";
 
 export function getRecommendation(
   stats: SafetyStats,
-  activityDuration: number
+  activityDuration: number,
+  preAlertStatus?: PreAlertStatus
 ): SafetyRecommendation {
-  const { safetyScore, timeSinceLastAlert } = stats;
+  // Recalculate safety score with pre-alert data when available
+  const safetyScore = preAlertStatus
+    ? calculateSafetyScore(
+        stats.timeSinceLastAlert,
+        stats.averageGap,
+        stats.trend,
+        stats.alertCount24h,
+        preAlertStatus
+      )
+    : stats.safetyScore;
+
+  const { timeSinceLastAlert } = stats;
 
   let level: SafetyLevel;
 

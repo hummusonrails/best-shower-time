@@ -12,14 +12,18 @@ import {
   ScrollReveal,
   CrossPromoBanner,
   computeStats,
+  computePreAlertStatus,
   filterAlertsByRegion,
+  useTranslation,
   type ProcessedAlert,
   type SafetyStats,
   type SafetyRecommendation,
+  type PreAlertStatus,
 } from "best-time-ui";
 import ActivitySelector from "@/components/ActivitySelector";
 import LocationSelector from "@/components/LocationSelector";
 import { getRecommendation } from "@/lib/safety";
+import { usePreAlerts } from "@/hooks/usePreAlerts";
 import { ActivityType } from "@/lib/types";
 
 const REFRESH_INTERVAL = 120_000;
@@ -34,6 +38,9 @@ export default function Home() {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [selectedRegion, setSelectedRegion] = useState("all");
   const [selectedCity, setSelectedCity] = useState<string | null>(null);
+  const [preAlertStatus, setPreAlertStatus] = useState<PreAlertStatus | null>(null);
+  const preAlerts = usePreAlerts(REFRESH_INTERVAL);
+  const { t } = useTranslation();
 
   // Persist location in localStorage
   useEffect(() => {
@@ -95,12 +102,24 @@ export default function Home() {
   // Effective duration: activity time + exit buffer (shower only)
   const effectiveDuration = activity === "shower" ? duration + exitTime : duration;
 
-  // Recompute stats when filtered alerts or duration change
+  // Compute pre-alert status when pre-alerts or region change
+  useEffect(() => {
+    if (preAlerts.length > 0) {
+      const regionId = selectedRegion !== "all" ? selectedRegion : null;
+      setPreAlertStatus(computePreAlertStatus(preAlerts, regionId));
+    } else {
+      setPreAlertStatus(null);
+    }
+  }, [preAlerts, selectedRegion]);
+
+  // Recompute stats when filtered alerts, duration, or pre-alert status change
   useEffect(() => {
     const newStats = computeStats(filteredAlerts);
     setStats(newStats);
-    setRecommendation(getRecommendation(newStats, effectiveDuration));
-  }, [filteredAlerts, effectiveDuration]);
+    setRecommendation(
+      getRecommendation(newStats, effectiveDuration, preAlertStatus ?? undefined)
+    );
+  }, [filteredAlerts, effectiveDuration, preAlertStatus]);
 
   return (
     <div className="min-h-screen flex flex-col items-center">
@@ -119,6 +138,18 @@ export default function Home() {
           <ScrollReveal>
             <SafetyVerdict recommendation={recommendation} />
           </ScrollReveal>
+          {preAlertStatus?.warningCount2h !== undefined &&
+            preAlertStatus.warningCount2h >= 2 && (
+              <div className="w-full px-4 py-3 rounded-lg bg-amber-900/30 border border-amber-600/40 text-amber-200 text-sm text-center">
+                {t("prealert.activeWarnings")}
+              </div>
+            )}
+          {preAlertStatus?.hasRecentExit &&
+            !(preAlertStatus.warningCount2h >= 2) && (
+              <div className="w-full px-4 py-3 rounded-lg bg-emerald-900/30 border border-emerald-600/40 text-emerald-200 text-sm text-center">
+                {t("prealert.goodWindow")}
+              </div>
+            )}
           <ScrollReveal direction="left" delay={100}>
             <ActivitySelector
               activity={activity}
