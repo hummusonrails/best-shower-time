@@ -1,15 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { type PreAlert } from "best-time-ui";
 import { createServerClient } from "@/lib/db";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 30; // ISR: re-run at most once per 30 seconds
 
 const SIX_HOURS_MS = 6 * 60 * 60 * 1000;
 
-export async function GET(request: Request) {
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url);
-    const sinceParam = searchParams.get("since");
+    const sinceParam = request.nextUrl.searchParams.get("since");
     const since = sinceParam ? Number(sinceParam) : Date.now() - SIX_HOURS_MS;
 
     const db = createServerClient();

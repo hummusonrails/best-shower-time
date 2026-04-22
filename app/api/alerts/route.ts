@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { type ProcessedAlert } from "best-time-ui";
 import { createServerClient } from "@/lib/db";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // ISR: re-run at most once per 60 seconds
 
 const TZEVA_ADOM_API = "https://api.tzevaadom.co.il/alerts-history";
 const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
@@ -24,7 +24,7 @@ export async function GET() {
     // Primary: Tzeva Adom API (~28h of recent data)
     const tzevaRes = await fetch(TZEVA_ADOM_API, {
       headers: { Accept: "application/json", "Content-Type": "application/json" },
-      cache: "no-store",
+      next: { revalidate: 60 },
     });
 
     let primary: ProcessedAlert[] = [];
